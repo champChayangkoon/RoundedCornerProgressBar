@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BaseRoundedCornerProgressBar">
+        <attr name="rcpAnimateDuration" format="integer" />
+        <attr name="rcpIndeterminate" format="boolean" />
+        <attr name="rcpInterpolator" format="reference" />
+        <attr name="rcpIsReverse" format="boolean" />
+        <attr name="rcpMax" format="integer" />
+        <attr name="rcpMin" format="integer" />
+        <attr name="rcpBackgroundPadding" format="dimension" />
+        <attr name="rcpProgress" format="integer" />
+        <attr name="rcpRadius" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="BaseSingleColorRoundedCornerProgressBar">
+        <attr name="rcpBackgroundColor" format="color|reference" />
+        <attr name="rcpProgressColor" format="color|reference" />
+        <attr name="rcpSecondaryProgressColor" format="color|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="BaseGradientRoundedCornerProgressBar">
+        <attr name="rcpBackgroundStartColor" format="color|reference" />
+        <attr name="rcpBackgroundCenterColor" format="color|reference" />
+        <attr name="rcpBackgroundEndColor" format="color|reference" />
+        <attr name="rcpIsReverseColors" format="boolean" />
+        <attr name="rcpProgressStartColor" format="color|reference" />
+        <attr name="rcpProgressCenterColor" format="color|reference" />
+        <attr name="rcpProgressEndColor" format="color|reference" />
+        <attr name="rcpSecondaryProgressStartColor" format="color|reference" />
+        <attr name="rcpSecondaryProgressCenterColor" format="color|reference" />
+        <attr name="rcpSecondaryProgressEndColor" format="color|reference" />
+    </declare-styleable>
+
+</resources>

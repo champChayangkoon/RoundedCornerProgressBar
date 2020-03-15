@@ -7,6 +7,8 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.os.Build
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewTreeObserver
@@ -187,7 +189,7 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
     private fun AttributeSet.initStyleable() {
         val typedArray = mContext.obtainStyledAttributes(this, R.styleable.BaseRoundedCornerProgressBar)
         typedArray.let {
-            mAnimateDuration = it.getInt(R.styleable.BaseRoundedCornerProgressBar_rcpAnimateDuration, 0).toLong()
+            animateDuration = it.getInt(R.styleable.BaseRoundedCornerProgressBar_rcpAnimateDuration, 1000).toLong()
             backgroundPadding = it.getDimensionPixelSize(R.styleable.BaseRoundedCornerProgressBar_rcpBackgroundPadding, 0).toFloat()
             mInterpolatorResId = it.getResourceId(R.styleable.BaseRoundedCornerProgressBar_rcpInterpolator, 0)
             indeterminate = it.getBoolean(R.styleable.BaseRoundedCornerProgressBar_rcpIndeterminate, false)
@@ -336,6 +338,7 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
     }
 
     fun setInterpolator(@InterpolatorRes interpolatorResId: Int) {
+        this.mInterpolatorResId = interpolatorResId
         interpolator = AnimationUtils.loadInterpolator(mContext, interpolatorResId)
     }
 
@@ -440,6 +443,96 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
         cancelProgressAnimation()
         mProgressAnimator = null
         super.onDetachedFromWindow()
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        val superState = super.onSaveInstanceState()
+        return superState?.let {
+            val savedState = SavedState(it)
+            savedState.mAnimateDuration = mAnimateDuration
+            savedState.mIndeterminate = mIndeterminate
+            savedState.mIsReverse = mIsReverse
+            savedState.mMax = mMax
+            savedState.mMin = mMin
+            savedState.mRadius = mRadius
+            savedState.mBackgroundPadding = mBackgroundPadding
+            savedState.mProgress = mProgress
+            savedState.mSecondaryProgress = mSecondaryProgress
+            savedState.mCurrentPlayTime = mProgressAnimator?.currentPlayTime ?: 0
+            savedState
+        } ?: superState
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        state?.let {
+            if (it is SavedState) {
+                super.onRestoreInstanceState(it.superState)
+                mAnimateDuration = it.mAnimateDuration
+                mIndeterminate = it.mIndeterminate
+                mIsReverse = it.mIsReverse
+                mMax = it.mMax
+                mMin = it.mMin
+                mRadius = it.mRadius
+                mBackgroundPadding = it.mBackgroundPadding
+                mProgress = it.mProgress
+                mSecondaryProgress = it.mSecondaryProgress
+                mProgressAnimator?.currentPlayTime = it.mCurrentPlayTime
+
+            } else super.onRestoreInstanceState(state)
+        } ?: super.onRestoreInstanceState(state)
+    }
+
+    private class SavedState : BaseSavedState {
+        var mAnimateDuration = PROGRESS_ANIM_DURATION
+        var mIndeterminate: Boolean = false
+        var mIsReverse: Boolean = false
+        var mMax: Int = MAX_PROGRESS
+        var mMin: Int = 0
+        var mRadius: Float = 0f
+        var mBackgroundPadding: Float = 0f
+        var mProgress: Int = 0
+        var mSecondaryProgress: Int = 0
+        var mCurrentPlayTime: Long = 0
+
+        constructor(source: Parcel?) : super(source) {
+            source?.let {
+                mAnimateDuration = it.readLong()
+                mIndeterminate = it.readBoolean()
+                mIsReverse = it.readBoolean()
+                mMax = it.readInt()
+                mMin = it.readInt()
+                mRadius = it.readFloat()
+                mBackgroundPadding = it.readFloat()
+                mProgress = it.readInt()
+                mSecondaryProgress = it.readInt()
+                mCurrentPlayTime = it.readLong()
+            }
+        }
+
+        @RequiresApi(Build.VERSION_CODES.N)
+        constructor(source: Parcel?, loader: ClassLoader?) : super(source, loader)
+        constructor(superState: Parcelable?) : super(superState)
+
+        override fun writeToParcel(out: Parcel?, flags: Int) {
+            super.writeToParcel(out, flags)
+            out?.let {
+                it.writeLong(mAnimateDuration)
+                it.writeBoolean(mIndeterminate)
+                it.writeBoolean(mIsReverse)
+                it.writeInt(mMax)
+                it.writeInt(mMin)
+                it.writeFloat(mRadius)
+                it.writeFloat(mBackgroundPadding)
+                it.writeInt(mProgress)
+                it.writeInt(mSecondaryProgress)
+                it.writeLong(mCurrentPlayTime)
+            }
+        }
+
+        companion object CREATOR : Parcelable.Creator<SavedState> {
+            override fun createFromParcel(source: Parcel?) = SavedState(source)
+            override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
+        }
     }
 
     protected companion object {

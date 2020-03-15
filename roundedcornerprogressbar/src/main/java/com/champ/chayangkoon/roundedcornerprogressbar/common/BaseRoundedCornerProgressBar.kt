@@ -9,6 +9,7 @@ import android.graphics.*
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewTreeObserver
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import androidx.annotation.ColorRes
@@ -226,13 +227,16 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
             isAntiAlias = true
         }
         mBackgroundRectWithPadding = RectF()
-        doOnLayout {
-            mBackgroundRect.set(0f, 0f,
-                    this@BaseRoundedCornerProgressBar.width.toFloat(),
-                    this@BaseRoundedCornerProgressBar.height.toFloat()
-            )
-            setupBackgroundProgress(mBackgroundRect, mBackgroundPaint)
-        }
+        viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                viewTreeObserver.removeOnGlobalLayoutListener(this)
+                mBackgroundRect.set(0f, 0f,
+                        this@BaseRoundedCornerProgressBar.width.toFloat(),
+                        this@BaseRoundedCornerProgressBar.height.toFloat()
+                )
+                setupBackgroundProgress(mBackgroundRect, mBackgroundPaint)
+            }
+        })
     }
 
     private fun initProgress() {

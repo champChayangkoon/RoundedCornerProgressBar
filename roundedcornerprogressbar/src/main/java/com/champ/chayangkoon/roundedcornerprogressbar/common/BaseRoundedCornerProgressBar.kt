@@ -17,9 +17,7 @@ import android.view.animation.LinearInterpolator
 import androidx.annotation.ColorRes
 import androidx.annotation.InterpolatorRes
 import androidx.annotation.RequiresApi
-import androidx.core.animation.doOnCancel
 import androidx.core.content.ContextCompat
-import androidx.core.view.doOnLayout
 import com.champ.chayangkoon.roundedcornerprogressbar.R
 
 abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
@@ -349,7 +347,10 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
         if (progressTemp < mMin) progressTemp = mMin
         if (progressTemp > mMax) progressTemp = mMax
         mProgress = progressTemp
-        if (mProgress != mMin) initProgressAnimator()
+        if (mProgress != mMin) {
+            initProgressAnimator()
+            startAnimation()
+        }
     }
 
     private fun initProgressAnimator() {
@@ -361,10 +362,11 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 mAnimatorPauseListener?.let { addPauseListener(it) }
             }
-
-        }.also {
-            it.start()
         }
+    }
+
+    private fun startAnimation(){
+        mProgressAnimator?.start()
     }
 
     fun resumeAnimation() {
@@ -477,7 +479,6 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
                 mProgress = it.mProgress
                 mSecondaryProgress = it.mSecondaryProgress
                 mProgressAnimator?.currentPlayTime = it.mCurrentPlayTime
-
             } else super.onRestoreInstanceState(state)
         } ?: super.onRestoreInstanceState(state)
     }
@@ -497,8 +498,8 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
         constructor(source: Parcel?) : super(source) {
             source?.let {
                 mAnimateDuration = it.readLong()
-                mIndeterminate = it.readBoolean()
-                mIsReverse = it.readBoolean()
+                mIndeterminate = it.readInt() != 0
+                mIsReverse = it.readInt() != 0
                 mMax = it.readInt()
                 mMin = it.readInt()
                 mRadius = it.readFloat()
@@ -517,8 +518,8 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
             super.writeToParcel(out, flags)
             out?.let {
                 it.writeLong(mAnimateDuration)
-                it.writeBoolean(mIndeterminate)
-                it.writeBoolean(mIsReverse)
+                it.writeInt(if (mIndeterminate) 1 else 0)
+                it.writeInt(if (mIsReverse) 1 else 0)
                 it.writeInt(mMax)
                 it.writeInt(mMin)
                 it.writeFloat(mRadius)

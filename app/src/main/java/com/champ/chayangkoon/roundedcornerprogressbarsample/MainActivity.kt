@@ -16,13 +16,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        roundedProgressBar.addAnimatorUpdateListener {
-            progressBar.progress = it.animatedValue.toString().toFloat()
-            roundedProgressBar.secondaryProgress = it.animatedValue.toString().toInt() + 100
-            gradientRoundedProgressBar.progress = it.animatedValue.toString().toInt()
-            Log.e("MainActivity", "MainActivity : ${it.animatedValue}")
-        }
-
         gradientRoundedProgressBar.apply {
             max = 1000
             setBackgroundColors(R.color.colorCoin, R.color.colorCoin)

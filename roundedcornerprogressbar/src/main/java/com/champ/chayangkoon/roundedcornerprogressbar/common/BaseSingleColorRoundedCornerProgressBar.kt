@@ -13,18 +13,36 @@ abstract class BaseSingleColorRoundedCornerProgressBar @JvmOverloads constructor
     private var mProgressColor: Int = 0
     private var mSecondaryProgressColor: Int = 0
 
+    var backgroundProgressColor: Int
+        get() = mBackgroundColor
+        set(value) {
+            mBackgroundColor = value
+        }
+
+    var progressColor: Int
+        get() = mProgressColor
+        set(value) {
+            mProgressColor = value
+        }
+
+    var secondaryProgressColor: Int
+        get() = mSecondaryProgressColor
+        set(value) {
+            mSecondaryProgressColor = value
+        }
+
     override fun AttributeSet.setupStyleable() {
         val typedArray = mContext.obtainStyledAttributes(this, R.styleable.BaseSingleColorRoundedCornerProgressBar)
         typedArray.let {
-            mBackgroundColor = it.getColor(
+            backgroundProgressColor = it.getColor(
                     R.styleable.BaseSingleColorRoundedCornerProgressBar_rcpBackgroundColor,
                     getColor(R.color.colorBackgroundProgress)
             )
-            mProgressColor = it.getColor(
+            progressColor = it.getColor(
                     R.styleable.BaseSingleColorRoundedCornerProgressBar_rcpProgressColor,
                     getColor(R.color.colorProgress)
             )
-            mSecondaryProgressColor = it.getInt(
+            secondaryProgressColor = it.getInt(
                     R.styleable.BaseSingleColorRoundedCornerProgressBar_rcpSecondaryProgressColor,
                     getColor(R.color.colorSecondaryProgress)
             )

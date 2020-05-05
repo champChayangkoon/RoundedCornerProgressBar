@@ -7,7 +7,6 @@
         <attr name="rcpIsReverse" format="boolean" />
         <attr name="rcpMax" format="integer" />
         <attr name="rcpMin" format="integer" />
-        <attr name="rcpBackgroundPadding" format="dimension" />
         <attr name="rcpProgress" format="integer" />
         <attr name="rcpRadius" format="dimension" />
     </declare-styleable>

@@ -38,7 +38,6 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
     private var mMinInitialized: Boolean = false
     private var mRadius: Float = 0f
     private var mRoundedWidth = 0f
-    private var mBackgroundPadding: Float = 0f
     private var mProgress: Int = 0
     private var mProgressAnimator: ObjectAnimator? = null
     private var mSecondaryProgress: Int = 0
@@ -124,12 +123,6 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
         }
     }
 
-    var backgroundPadding: Float
-        get() = mBackgroundPadding
-        set(value) {
-            mBackgroundPadding = value
-        }
-
     var progress: Int
         get() = mProgress
         set(value) {
@@ -188,7 +181,6 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
         val typedArray = mContext.obtainStyledAttributes(this, R.styleable.BaseRoundedCornerProgressBar)
         typedArray.let {
             animateDuration = it.getInt(R.styleable.BaseRoundedCornerProgressBar_rcpAnimateDuration, 1000).toLong()
-            backgroundPadding = it.getDimensionPixelSize(R.styleable.BaseRoundedCornerProgressBar_rcpBackgroundPadding, 0).toFloat()
             mInterpolatorResId = it.getResourceId(R.styleable.BaseRoundedCornerProgressBar_rcpInterpolator, 0)
             indeterminate = it.getBoolean(R.styleable.BaseRoundedCornerProgressBar_rcpIndeterminate, false)
             isReverse = it.getBoolean(R.styleable.BaseRoundedCornerProgressBar_rcpIsReverse, false)
@@ -332,7 +324,7 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
         val pureMax = mMax - mMin
         val pureProgress = this - mMin
 
-        return ((mBackgroundRect.width() - (mBackgroundPadding * 2)) / pureMax) * pureProgress
+        return (mBackgroundRect.width() / pureMax) * pureProgress
     }
 
     fun setInterpolator(@InterpolatorRes interpolatorResId: Int) {
@@ -457,7 +449,6 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
             savedState.mMax = mMax
             savedState.mMin = mMin
             savedState.mRadius = mRadius
-            savedState.mBackgroundPadding = mBackgroundPadding
             savedState.mProgress = mProgress
             savedState.mSecondaryProgress = mSecondaryProgress
             savedState.mCurrentPlayTime = mProgressAnimator?.currentPlayTime ?: 0
@@ -475,7 +466,6 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
                 mMax = it.mMax
                 mMin = it.mMin
                 mRadius = it.mRadius
-                mBackgroundPadding = it.mBackgroundPadding
                 mProgress = it.mProgress
                 mSecondaryProgress = it.mSecondaryProgress
                 mProgressAnimator?.currentPlayTime = it.mCurrentPlayTime
@@ -490,7 +480,6 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
         var mMax: Int = MAX_PROGRESS
         var mMin: Int = 0
         var mRadius: Float = 0f
-        var mBackgroundPadding: Float = 0f
         var mProgress: Int = 0
         var mSecondaryProgress: Int = 0
         var mCurrentPlayTime: Long = 0
@@ -503,7 +492,6 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
                 mMax = it.readInt()
                 mMin = it.readInt()
                 mRadius = it.readFloat()
-                mBackgroundPadding = it.readFloat()
                 mProgress = it.readInt()
                 mSecondaryProgress = it.readInt()
                 mCurrentPlayTime = it.readLong()
@@ -523,7 +511,6 @@ abstract class BaseRoundedCornerProgressBar @JvmOverloads constructor(
                 it.writeInt(mMax)
                 it.writeInt(mMin)
                 it.writeFloat(mRadius)
-                it.writeFloat(mBackgroundPadding)
                 it.writeInt(mProgress)
                 it.writeInt(mSecondaryProgress)
                 it.writeLong(mCurrentPlayTime)
